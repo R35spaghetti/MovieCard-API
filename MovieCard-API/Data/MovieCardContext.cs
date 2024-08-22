@@ -3,12 +3,8 @@ using MovieCard_API.Models;
 
 namespace MovieCard_API.Data;
 
-public class MovieCardContext : DbContext
+public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbContext(options)
 {
-    public MovieCardContext (DbContextOptions<MovieCardContext> options)
-        : base(options)
-    {
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Movie>()
