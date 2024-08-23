@@ -13,17 +13,29 @@ public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbCo
 
         modelBuilder.Entity<Movie>()
             .HasMany(m => m.Actors)
-            .WithMany(m => m.Movies);
+            .WithMany(a => a.Movies);
 
         modelBuilder.Entity<Movie>()
             .HasMany(m => m.Genres)
-            .WithMany(m => m.Movies);
+            .WithMany(g => g.Movies);
 
         modelBuilder.Entity<Director>()
-            .HasOne(m => m.ContactInformation)
-            .WithOne(d=>d.Director)
-            .HasForeignKey<ContactInformation>(co => co.DirectorId);
+            .HasOne(d => d.ContactInformation)
+            .WithOne(c=>c.Director)
+            .HasForeignKey<ContactInformation>(c => c.DirectorId);
+        
+        modelBuilder.Entity<MovieActor>()
+            .HasKey(ma => new { ma.MovieId, ma.ActorId });
 
+        modelBuilder.Entity<MovieActor>()
+            .HasOne(ma => ma.Movie)
+            .WithMany(m => m.MovieActors)
+            .HasForeignKey(ma => ma.MovieId);
+
+        modelBuilder.Entity<MovieActor>()
+            .HasOne(ma => ma.Actor)
+            .WithMany(a => a.MovieActors)
+            .HasForeignKey(ma => ma.ActorId);
 
     }
 
