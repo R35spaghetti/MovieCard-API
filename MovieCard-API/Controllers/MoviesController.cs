@@ -41,4 +41,16 @@ public class MoviesController : ControllerBase
         var jsonString = JsonSerializer.Serialize(movie, options);
         return Ok(jsonString);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<MovieDTO>> CreateMovie([FromQuery] MovieDTO movie)
+    {
+       var createdMovie= await _movieRepository.CreateMovieAsync(movie);
+       var options = new JsonSerializerOptions
+       {
+           ReferenceHandler = ReferenceHandler.Preserve
+       };
+       var jsonString = JsonSerializer.Serialize(createdMovie, options);
+       return Ok(jsonString);
+    }
 }

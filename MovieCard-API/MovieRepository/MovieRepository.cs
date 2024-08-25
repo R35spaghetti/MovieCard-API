@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
 using MovieCard_API.DTOs;
+using MovieCard_API.Models;
 
 namespace MovieCard_API.MovieRepository;
 
@@ -67,5 +68,27 @@ public class MovieRepository
             ReleaseDate: movie.ReleaseDate,
             Description: movie.Description
         );
+    }
+    
+    public async Task<MovieDTO> CreateMovieAsync(MovieDTO createMovie)
+    {
+        
+        var movie = new Movie
+        {
+            Id = createMovie.Id,
+            DirectorId = createMovie.DirectorId,
+            Director = createMovie.Director,
+            Actors = createMovie.Actors,
+            Genres = createMovie.Genres,
+            Title = createMovie.Title,
+            Rating = createMovie.Rating,
+            ReleaseDate = createMovie.ReleaseDate,
+            Description = createMovie.Description,
+        };
+        
+        
+        await _context.AddAsync(movie);
+        await _context.SaveChangesAsync();
+        return createMovie;
     }
 }
