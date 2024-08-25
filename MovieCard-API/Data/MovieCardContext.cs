@@ -9,7 +9,7 @@ public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbCo
     {
         modelBuilder.Entity<Movie>()
             .HasOne(m => m.Director)
-            .WithMany(d=>d.Movies);
+            .WithMany(d => d.Movies);
 
         modelBuilder.Entity<Movie>()
             .HasMany(m => m.Actors)
@@ -21,9 +21,15 @@ public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbCo
 
         modelBuilder.Entity<Director>()
             .HasOne(d => d.ContactInformation)
-            .WithOne(c=>c.Director)
-            .HasForeignKey<ContactInformation>(c => c.DirectorId);
-        
+            .WithOne(c => c.Director)
+            .HasForeignKey<ContactInformation>(c => c.DirectorId)
+            .IsRequired();
+
+        modelBuilder.Entity<ContactInformation>()
+            .Property(ci => ci.Id)
+            .ValueGeneratedOnAdd();
+
+
         modelBuilder.Entity<MovieActor>()
             .HasKey(ma => new { ma.MovieId, ma.ActorId });
 
@@ -36,7 +42,6 @@ public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbCo
             .HasOne(ma => ma.Actor)
             .WithMany(a => a.MovieActors)
             .HasForeignKey(ma => ma.ActorId);
-
     }
 
     public DbSet<Movie> Movies => Set<Movie>();
@@ -44,5 +49,4 @@ public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbCo
     public DbSet<Director> Directors => Set<Director>();
     public DbSet<ContactInformation> ContactInformations => Set<ContactInformation>();
     public DbSet<Actor> Actors => Set<Actor>();
-
 }
