@@ -1,8 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MovieCard_API.Data;
 using MovieCard_API.DTOs;
 
 namespace MovieCard_API.Controllers;
@@ -11,41 +9,36 @@ namespace MovieCard_API.Controllers;
 [ApiController]
 public class MoviesController : ControllerBase
 {
-    private readonly MovieCardContext _movieCardContext;
+    private readonly MovieRepository.MovieRepository _movieRepository;
 
-
-    public MoviesController(MovieCardContext movieCardContext)
+    public MoviesController(MovieRepository.MovieRepository movieRepository)
     {
-        _movieCardContext = movieCardContext;
+        _movieRepository = movieRepository;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies()
     {
-        var movies = await _movieCardContext.Movies
-            .Include(d => d.Director)
-            .ThenInclude(c => c.ContactInformation)
-            .Include(a => a.Actors)
-            .Include(g => g.Genres)
-            .ToListAsync();
-
-        var movieDtOs = movies.Select(m =>
-            new MovieDTO(
-                Id: m.Id,
-                DirectorId: m.DirectorId,
-                Director: m.Director,
-                Actors: m.Actors,
-                Genres: m.Genres,
-                Title: m.Title,
-                Rating: m.Rating,
-                ReleaseDate: m.ReleaseDate,
-                Description: m.Description)).ToList();
+        var movies = await _movieRepository.GetAllMoviesAsync();
 
         var options = new JsonSerializerOptions
         {
             ReferenceHandler = ReferenceHandler.Preserve
         };
-        var jsonString = JsonSerializer.Serialize(movieDtOs, options);
+        var jsonString = JsonSerializer.Serialize(movies, options);
+        return Ok(jsonString);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies(int id)
+    {
+        var movie = await _movieRepository.GetMovieByIdAsync(id);
+
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+        var jsonString = JsonSerializer.Serialize(movie, options);
         return Ok(jsonString);
     }
 }

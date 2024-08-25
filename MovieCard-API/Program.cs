@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
+using MovieCard_API.MovieRepository;
 using MovieCard_API.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MovieCardContext>(options => options
     .UseSqlite(builder.Configuration.GetConnectionString("MovieCardContext") ?? string.Empty));
 builder.Services.AddControllers();
+builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddSingleton<SeedMovies>();
 
 var app = builder.Build();
