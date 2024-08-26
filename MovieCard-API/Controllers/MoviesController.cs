@@ -45,12 +45,25 @@ public class MoviesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<MovieDTO>> CreateMovie([FromQuery] MovieDTO movie)
     {
-       var createdMovie= await _movieRepository.CreateMovieAsync(movie);
-       var options = new JsonSerializerOptions
-       {
-           ReferenceHandler = ReferenceHandler.Preserve
-       };
-       var jsonString = JsonSerializer.Serialize(createdMovie, options);
-       return Ok(jsonString);
+        var createdMovie = await _movieRepository.CreateMovieAsync(movie);
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+        var jsonString = JsonSerializer.Serialize(createdMovie, options);
+        return Ok(jsonString);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<MovieDTO>> UpdateMovie([FromQuery] MovieDTO movie, int id)
+    {
+        var updateMovie = await _movieRepository.UpdateMovieAsync(movie, id);
+
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+        var jsonString = JsonSerializer.Serialize(updateMovie, options);
+        return Ok(jsonString);
     }
 }

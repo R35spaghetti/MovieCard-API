@@ -38,7 +38,8 @@ public class MovieRepository
                 Title: m.Title,
                 Rating: m.Rating,
                 ReleaseDate: m.ReleaseDate,
-                Description: m.Description)).ToList();
+                Description: m.Description
+            )).ToList();
 
         return movieDtOs;
     }
@@ -56,7 +57,7 @@ public class MovieRepository
         {
             throw new InvalidOperationException($"Movie with ID {id} not found");
         }
-        
+
         return new MovieDTO(
             Id: movie.Id,
             DirectorId: movie.DirectorId,
@@ -69,10 +70,9 @@ public class MovieRepository
             Description: movie.Description
         );
     }
-    
+
     public async Task<MovieDTO> CreateMovieAsync(MovieDTO createMovie)
     {
-        
         var movie = new Movie
         {
             Id = createMovie.Id,
@@ -83,12 +83,54 @@ public class MovieRepository
             Title = createMovie.Title,
             Rating = createMovie.Rating,
             ReleaseDate = createMovie.ReleaseDate,
-            Description = createMovie.Description,
+            Description = createMovie.Description
         };
-        
-        
+
+
         await _context.AddAsync(movie);
         await _context.SaveChangesAsync();
         return createMovie;
+    }
+
+    public async Task<MovieDTO> UpdateMovieAsync(MovieDTO updateMovie, int id)
+    {
+        var movie = await _context.Movies
+            .Include(d => d.Director)
+            .ThenInclude(c => c.ContactInformation)
+            .Include(a => a.Actors)
+            .Include(g => g.Genres).FirstOrDefaultAsync(m => m.Id == id);
+
+
+        if (movie == null)
+        {
+            throw new InvalidOperationException("Movie not found");
+        }
+
+        try
+        {
+            movie.Title = updateMovie.Title;
+            movie.Rating = updateMovie.Rating;
+            movie.ReleaseDate = updateMovie.ReleaseDate;
+            movie.Description = updateMovie.Description;
+
+            if (updateMovie is { DirectorId: not null, Director: not null })
+            {
+                movie.Director = updateMovie.Director;
+            }
+
+            movie.Actors = updateMovie.Actors?.Select(a => new Actor
+                { Id = a.Id, Name = a.Name, Birthday = a.Birthday, Movies = a.Movies }).ToList();
+
+            movie.Genres = updateMovie.Genres?.Select(g =>
+                new Genre { Id = g.Id, Name = g.Name, Movies = g.Movies }).ToList();
+            await _context.SaveChangesAsync();
+            return updateMovie;
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            Console.WriteLine($"{ex.Message}");
+        }
+
+        return null;
     }
 }
