@@ -13,5 +13,4 @@ public class Movie
     public DateTime ReleaseDate { get; set; }
     public string Description { get; set; }
     
-    public ICollection<MovieActor> MovieActors { get; set; }
 }
