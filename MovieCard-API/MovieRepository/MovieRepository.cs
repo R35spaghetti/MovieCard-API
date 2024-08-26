@@ -30,8 +30,6 @@ public class MovieRepository
 
         var movieDtOs = movies.Select(m =>
             new MovieDTO(
-                Id: m.Id,
-                DirectorId: m.DirectorId,
                 Director: m.Director,
                 Actors: m.Actors,
                 Genres: m.Genres,
@@ -59,8 +57,6 @@ public class MovieRepository
         }
 
         return new MovieDTO(
-            Id: movie.Id,
-            DirectorId: movie.DirectorId,
             Director: movie.Director,
             Actors: movie.Actors,
             Genres: movie.Genres,
@@ -75,8 +71,6 @@ public class MovieRepository
     {
         var movie = new Movie
         {
-            Id = createMovie.Id,
-            DirectorId = createMovie.DirectorId,
             Director = createMovie.Director,
             Actors = createMovie.Actors,
             Genres = createMovie.Genres,
@@ -113,7 +107,7 @@ public class MovieRepository
             movie.ReleaseDate = updateMovie.ReleaseDate;
             movie.Description = updateMovie.Description;
 
-            if (updateMovie is { DirectorId: not null, Director: not null })
+            if (updateMovie is {Director: not null })
             {
                 movie.Director = updateMovie.Director;
             }
