@@ -66,4 +66,11 @@ public class MoviesController : ControllerBase
         var jsonString = JsonSerializer.Serialize(updateMovie, options);
         return Ok(jsonString);
     }
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteMovie(int id)
+    {
+        _movieRepository.DeleteMovieAsync(id);
+        return Ok("Deleted");
+    }
 }

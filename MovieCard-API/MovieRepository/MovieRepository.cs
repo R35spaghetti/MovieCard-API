@@ -133,4 +133,10 @@ public class MovieRepository
 
         return null;
     }
+    public async Task DeleteMovieAsync(int id)
+    {
+        var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+        _context.Movies.Remove(movie);
+        await _context.SaveChangesAsync();
+    }
 }
