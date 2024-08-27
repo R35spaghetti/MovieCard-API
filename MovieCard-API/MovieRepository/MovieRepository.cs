@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
 using MovieCard_API.DTOs;
@@ -87,7 +86,7 @@ public class MovieRepository
         return createMovie;
     }
 
-    public async Task<MovieDTO> UpdateMovieAsync(MovieDTO updateMovie, int id)
+    public async Task<MovieDTO?> UpdateMovieAsync(MovieDTO updateMovie, int id)
     {
         var movie = await _context.Movies
             .Include(d => d.Director)
