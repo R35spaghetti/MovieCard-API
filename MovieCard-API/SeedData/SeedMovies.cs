@@ -30,7 +30,7 @@ internal class SeedMovies
     private string GenerateRandomEmail()
     {
         var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        var sb = new StringBuilder(9);
+        var sb = new StringBuilder(17);
         for (int i = 0; i < 6; i++)
         {
             sb.Append(chars[_random.Next(chars.Length)]);
