@@ -3,8 +3,14 @@ using MovieCard_API.Models;
 
 namespace MovieCard_API.Data;
 
-public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbContext(options)
+public class MovieCardContext : DbContext
 {
+    public MovieCardContext(DbContextOptions<MovieCardContext> options) : base(options)
+    {
+        Database.EnsureCreated();
+        Database.Migrate();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Movie>()
@@ -28,7 +34,6 @@ public class MovieCardContext(DbContextOptions<MovieCardContext> options) : DbCo
         modelBuilder.Entity<ContactInformation>()
             .Property(ci => ci.Id)
             .ValueGeneratedOnAdd();
-
     }
 
     public DbSet<Movie> Movies => Set<Movie>();
