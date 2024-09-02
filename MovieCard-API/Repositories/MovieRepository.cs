@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
 using MovieCard_API.DTOs;
@@ -8,10 +9,13 @@ namespace MovieCard_API.MovieRepository;
 public class MovieRepository
 {
     private readonly MovieCardContext _context;
+    private readonly IMapper _mapper;
 
-    public MovieRepository(MovieCardContext context)
+
+    public MovieRepository(MovieCardContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<List<MovieDTO>> GetAllMoviesAsync()
@@ -27,19 +31,8 @@ public class MovieRepository
         {
             throw new InvalidOperationException($"Movies were not found");
         }
-
-        var movieDtOs = movies.Select(m =>
-            new MovieDTO(
-                Director: m.Director,
-                Actors: m.Actors,
-                Genres: m.Genres,
-                Title: m.Title,
-                Rating: m.Rating,
-                ReleaseDate: m.ReleaseDate,
-                Description: m.Description
-            )).ToList();
-
-        return movieDtOs;
+        
+        return _mapper.Map<List<MovieDTO>>(movies);
     }
 
     public async Task<MovieDTO> GetMovieByIdAsync(int id)
@@ -56,34 +49,16 @@ public class MovieRepository
             throw new InvalidOperationException($"Movie with ID {id} not found");
         }
 
-        return new MovieDTO(
-            Director: movie.Director,
-            Actors: movie.Actors,
-            Genres: movie.Genres,
-            Title: movie.Title,
-            Rating: movie.Rating,
-            ReleaseDate: movie.ReleaseDate,
-            Description: movie.Description
-        );
+        return _mapper.Map<MovieDTO>(movie);
     }
 
     public async Task<MovieDTO> CreateMovieAsync(MovieDTO createMovie)
     {
-        var movie = new Movie
-        {
-            Director = createMovie.Director,
-            Actors = createMovie.Actors,
-            Genres = createMovie.Genres,
-            Title = createMovie.Title,
-            Rating = createMovie.Rating,
-            ReleaseDate = createMovie.ReleaseDate,
-            Description = createMovie.Description
-        };
-
-
+        var movie = _mapper.Map<Movie>(createMovie);
+        
         await _context.AddAsync(movie);
         await _context.SaveChangesAsync();
-        return createMovie;
+        return _mapper.Map<MovieDTO>(movie);
     }
 
     public async Task<MovieDTO?> UpdateMovieAsync(MovieDTO updateMovie, int id)
@@ -109,16 +84,14 @@ public class MovieRepository
 
             if (updateMovie is {Director: not null })
             {
-                movie.Director = updateMovie.Director;
+                movie.Director = _mapper.Map<Director>(updateMovie.Director);
             }
 
-            movie.Actors = updateMovie.Actors?.Select(a => new Actor
-                { Id = a.Id, Name = a.Name, Birthday = a.Birthday, Movies = a.Movies }).ToList();
-
-            movie.Genres = updateMovie.Genres?.Select(g =>
-                new Genre { Id = g.Id, Name = g.Name, Movies = g.Movies }).ToList();
+            movie.Actors = _mapper.Map<List<Actor>>(updateMovie.Actors);
+            movie.Genres = _mapper.Map<List<Genre>>(updateMovie.Genres);
+            
             await _context.SaveChangesAsync();
-            return updateMovie;
+            return _mapper.Map<MovieDTO>(movie);
         }
         catch (DbUpdateConcurrencyException ex)
         {

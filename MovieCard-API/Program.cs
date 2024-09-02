@@ -15,6 +15,7 @@ builder.Services.AddDbContext<MovieCardContext>(options => options
 builder.Services.AddControllers();
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddSingleton<SeedMovies>();
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 var app = builder.Build();
 
