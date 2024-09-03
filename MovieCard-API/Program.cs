@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MovieCardContext>(options => options
     .UseSqlite(builder.Configuration.GetConnectionString("MovieCardContext") ?? string.Empty));
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddScoped<MovieRepository>();
 builder.Services.AddSingleton<SeedMovies>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));

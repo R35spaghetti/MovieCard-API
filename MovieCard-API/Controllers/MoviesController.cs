@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MovieCard_API.DTOs;
 
@@ -102,6 +103,36 @@ public class MoviesController : ControllerBase
         {
             await _movieRepository.DeleteMovieAsync(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> PatchMovie(JsonPatchDocument<MovieDTO> patchMovie, int id)
+    {
+        if (patchMovie is null) return BadRequest("No patch doc found");
+
+
+        var movie = await _movieRepository.GetMovieByIdAsync(id);
+        if (movie == null)
+        {
+            return NotFound("Movie not found");
+        }
+
+        try
+        {
+            patchMovie.ApplyTo(movie);
+            TryValidateModel(movie);
+            if (!ModelState.IsValid)
+            {
+                UnprocessableEntity(ModelState);
+            }
+
+            await _movieRepository.UpdateMovieAsync(movie, id);
+            return Ok(movie);
         }
         catch (Exception ex)
         {
