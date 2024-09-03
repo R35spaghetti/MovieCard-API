@@ -7,16 +7,15 @@ public class MovieCardContext : DbContext
 {
     public MovieCardContext(DbContextOptions<MovieCardContext> options) : base(options)
     {
-        Database.EnsureCreated();
-        Database.Migrate();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Movie>()
             .HasOne(m => m.Director)
-            .WithMany(d => d.Movies);
-
+            .WithMany(d => d.Movies)
+            .HasForeignKey(m => m.DirectorId);
+        
         modelBuilder.Entity<Movie>()
             .HasMany(m => m.Actors)
             .WithMany(a => a.Movies);
