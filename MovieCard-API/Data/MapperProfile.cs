@@ -12,18 +12,21 @@ public class MapperProfile : Profile
         CreateMap<Movie, MovieDTO>().ConstructUsing(
             src => new MovieDTO(src.Director, src.Actors, src.Genres, src.Title, src.Rating, src.ReleaseDate,
                 src.Description));
+        
+        CreateMap<Actor, ActorDTO>().ReverseMap();
         CreateMap<Actor, ActorDTO>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Birthday))
             .ForMember(dest => dest.Movies, opt => opt.MapFrom(src => src.Movies));
 
-        CreateMap<Director, Director>().ReverseMap();
+        CreateMap<Director, DirectorDTO>().ReverseMap();
         CreateMap<Director, DirectorDTO>()
             .ForMember(dest => dest.ContactInformation, opt => opt.MapFrom(src => src.ContactInformation))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Birthday))
             .ForMember(dest => dest.Movies, opt => opt.MapFrom(src => src.Movies));
 
+        CreateMap<Genre, GenreDTO>().ReverseMap();
         CreateMap<Genre, GenreDTO>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Movies, opt => opt.MapFrom(src => src.Movies));
