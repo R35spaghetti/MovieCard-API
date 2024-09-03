@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
 using MovieCard_API.DTOs;
 using MovieCard_API.Models;
+using MovieCard_API.Repositories.contracts;
 
-namespace MovieCard_API.MovieRepository;
+namespace MovieCard_API.Repositories;
 
-public class MovieRepository
+public class MovieRepository : IMovieRepository
 {
     private readonly MovieCardContext _context;
     private readonly IMapper _mapper;
@@ -60,7 +61,7 @@ public class MovieRepository
         await _context.SaveChangesAsync();
         return _mapper.Map<MovieDTO>(movie);
     }
-
+    
     public async Task<MovieDTO?> UpdateMovieAsync(MovieDTO updateMovie, int id)
     {
         var movie = await _context.Movies

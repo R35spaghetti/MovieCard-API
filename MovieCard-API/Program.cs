@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
-using MovieCard_API.MovieRepository;
+using MovieCard_API.Repositories;
 using MovieCard_API.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
