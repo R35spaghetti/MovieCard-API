@@ -54,13 +54,6 @@ public class MoviesController : ControllerBase
                     (!parameters.ReleaseDateTo.HasValue || m.ReleaseDate <= parameters.ReleaseDateTo.Value));
             }
 
-            //null for now if true
-            if (parameters.IncludeActors)
-            {
-                query = query.Where(m => m.Actors.Any(a => a.Name.Contains(parameters.ActorName, StringComparison.OrdinalIgnoreCase)));
-                
-            }
-
             var movies =  query.ToList();
 
             if (!movies.Any())
