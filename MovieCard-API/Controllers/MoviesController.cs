@@ -97,7 +97,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<MovieDTO>> CreateMovie([FromQuery] MovieDTO movie)
+    public async Task<ActionResult<MovieCreateDTO>> CreateMovie([FromQuery] MovieCreateDTO movie)
     {
         try
         {

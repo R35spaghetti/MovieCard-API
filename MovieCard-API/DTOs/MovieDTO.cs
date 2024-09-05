@@ -3,9 +3,10 @@
 namespace MovieCard_API.DTOs;
 
 public record MovieDTO(
+    int Id,
     Director? Director,
-    ICollection<Actor>? Actors,
-    ICollection<Genre>? Genres,
+    ICollection<ActorDTO>? Actors,
+    ICollection<GenreDTO>? Genres,
     string Title,
     string Rating,
     DateTime ReleaseDate,

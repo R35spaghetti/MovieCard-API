@@ -52,14 +52,14 @@ public class MovieRepository : IMovieRepository
 
         return _mapper.Map<MovieDTO>(movie);
     }
-
-    public async Task<MovieDTO> CreateMovieAsync(MovieDTO createMovie)
+    public async Task<MovieCreateDTO> CreateMovieAsync(MovieCreateDTO createMovie)
     {
         var movie = _mapper.Map<Movie>(createMovie);
         
         await _context.AddAsync(movie);
         await _context.SaveChangesAsync();
         return _mapper.Map<MovieDTO>(movie);
+            return _mapper.Map<MovieCreateDTO>(movie);
     }
     
     public async Task<MovieDTO?> UpdateMovieAsync(MovieDTO updateMovie, int id)
