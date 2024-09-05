@@ -20,12 +20,13 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies([FromQuery] MovieSearchParameters parameters)
+    public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies([FromQuery] MovieSearchParameters parameters,
+        [FromQuery] MovieSortParameters sortBy)
     {
         try
         {
             IEnumerable<MovieDTO> query = await _movieRepository.GetAllMoviesAsync();
-            
+
             //ugly for now
             if (!string.IsNullOrEmpty(parameters.Title))
             {
@@ -34,17 +35,20 @@ public class MoviesController : ControllerBase
 
             if (!string.IsNullOrEmpty(parameters.Genre))
             {
-                query = query.Where(m => m.Genres.Any(g => g.Name.Contains(parameters.Genre, StringComparison.OrdinalIgnoreCase)));
+                query = query.Where(m =>
+                    m.Genres.Any(g => g.Name.Contains(parameters.Genre, StringComparison.OrdinalIgnoreCase)));
             }
 
             if (!string.IsNullOrEmpty(parameters.ActorName))
             {
-                query = query.Where(m => m.Actors.Any(a => a.Name.Contains(parameters.ActorName, StringComparison.OrdinalIgnoreCase)));
+                query = query.Where(m =>
+                    m.Actors.Any(a => a.Name.Contains(parameters.ActorName, StringComparison.OrdinalIgnoreCase)));
             }
 
             if (!string.IsNullOrEmpty(parameters.DirectorName))
             {
-                query = query.Where(m => m.Director.Name.Contains(parameters.DirectorName, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(m =>
+                    m.Director.Name.Contains(parameters.DirectorName, StringComparison.OrdinalIgnoreCase));
             }
 
             if (parameters.ReleaseDateFrom.HasValue || parameters.ReleaseDateTo.HasValue)
@@ -54,12 +58,11 @@ public class MoviesController : ControllerBase
                     (!parameters.ReleaseDateTo.HasValue || m.ReleaseDate <= parameters.ReleaseDateTo.Value));
             }
 
-            var movies =  query.ToList();
+            var movies = query.AsQueryable();
 
-            if (!movies.Any())
-            {
-                throw new InvalidOperationException($"No movies found matching the criteria");
-            }
+            movies = SortMovies.GetSortedMovies(sortBy, movies);
+
+
             var options = new JsonSerializerOptions
             {
                 ReferenceHandler = ReferenceHandler.Preserve
