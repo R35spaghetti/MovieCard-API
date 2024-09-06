@@ -19,7 +19,7 @@ public class MovieRepository : IMovieRepository
         _mapper = mapper;
     }
 
-    public async Task<List<MovieDTO>> GetAllMoviesAsync()
+    public async Task<IEnumerable<Movie>> GetAllMoviesAsync()
     {
         var movies = await _context.Movies
             .Include(d => d.Director)
@@ -28,15 +28,16 @@ public class MovieRepository : IMovieRepository
             .Include(g => g.Genres)
             .ToListAsync();
 
+
         if (movies == null)
         {
             throw new InvalidOperationException($"Movies were not found");
         }
-        
-        return _mapper.Map<List<MovieDTO>>(movies);
+
+        return  _mapper.Map<IEnumerable<Movie>>(movies);
     }
 
-    public async Task<MovieDTO> GetMovieByIdAsync(int id)
+    public async Task<Movie> GetMovieByIdAsync(int id)
     {
         var movie = await _context.Movies
             .Include(d => d.Director)
@@ -50,25 +51,27 @@ public class MovieRepository : IMovieRepository
             throw new InvalidOperationException($"Movie with ID {id} not found");
         }
 
-        return _mapper.Map<MovieDTO>(movie);
+        return _mapper.Map<Movie>(movie);
     }
-    public async Task<MovieCreateDTO> CreateMovieAsync(MovieCreateDTO createMovie)
+
+    public async Task<Movie> CreateMovieAsync(MovieCreateDTO createMovie)
     {
         var movie = _mapper.Map<Movie>(createMovie);
-        
+
+
         await _context.AddAsync(movie);
         await _context.SaveChangesAsync();
-        return _mapper.Map<MovieDTO>(movie);
-            return _mapper.Map<MovieCreateDTO>(movie);
+        return _mapper.Map<Movie>(movie);
     }
-    
-    public async Task<MovieDTO?> UpdateMovieAsync(MovieDTO updateMovie, int id)
+
+
+    public async Task<Movie> UpdateMovieAsync(MovieDTO updateMovie)
     {
         var movie = await _context.Movies
             .Include(d => d.Director)
             .ThenInclude(c => c.ContactInformation)
             .Include(a => a.Actors)
-            .Include(g => g.Genres).FirstOrDefaultAsync(m => m.Id == id);
+            .Include(g => g.Genres).FirstOrDefaultAsync(m => m.Id == updateMovie.Id);
 
 
         if (movie == null)
@@ -83,16 +86,8 @@ public class MovieRepository : IMovieRepository
             movie.ReleaseDate = updateMovie.ReleaseDate;
             movie.Description = updateMovie.Description;
 
-            if (updateMovie is {Director: not null })
-            {
-                movie.Director = _mapper.Map<Director>(updateMovie.Director);
-            }
-
-            movie.Actors = _mapper.Map<List<Actor>>(updateMovie.Actors);
-            movie.Genres = _mapper.Map<List<Genre>>(updateMovie.Genres);
-            
             await _context.SaveChangesAsync();
-            return _mapper.Map<MovieDTO>(movie);
+            return _mapper.Map<Movie>(movie);
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -101,10 +96,11 @@ public class MovieRepository : IMovieRepository
 
         return null;
     }
+
     public async Task DeleteMovieAsync(int id)
     {
         var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
-        _context.Movies.Remove(movie);
+        if (movie != null) _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();
     }
 }

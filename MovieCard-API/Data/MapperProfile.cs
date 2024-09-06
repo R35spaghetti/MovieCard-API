@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using MovieCard_API.DTOs;
 using MovieCard_API.Models;
 
@@ -9,26 +10,33 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         CreateMap<Movie, MovieDTO>().ReverseMap();
-        CreateMap<Movie, MovieDTO>().ConstructUsing(
-            src => new MovieDTO(src.Director, src.Actors, src.Genres, src.Title, src.Rating, src.ReleaseDate,
-                src.Description));
-        
-        CreateMap<Actor, ActorDTO>().ReverseMap();
-        CreateMap<Actor, ActorDTO>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Birthday))
-            .ForMember(dest => dest.Movies, opt => opt.MapFrom(src => src.Movies));
+        CreateMap<MovieDTO, Movie>();
+        CreateMap<Movie, MovieDTO>();
+        CreateMap<Movie, MovieCreateDTO>();
+        CreateMap<MovieCreateDTO, Movie>();
+        CreateMap<MovieCreateDTO, Movie>()
+            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.ActorIds))
+            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.GenreIds));
+        CreateMap<Movie, MovieCreateDTO>()
+            .ForMember(dest => dest.GenreIds, opt => opt.MapFrom(src => src.Genres))
+            .ForMember(dest => dest.ActorIds, opt => opt.MapFrom(src => src.Actors));
+   CreateMap<MovieDTO, Movie>()
+            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Id));
+     
+
+        CreateMap<JsonPatchDocument<MovieDTO>, JsonPatchDocument<Movie>>().ReverseMap();
 
         CreateMap<Director, DirectorDTO>().ReverseMap();
-        CreateMap<Director, DirectorDTO>()
-            .ForMember(dest => dest.ContactInformation, opt => opt.MapFrom(src => src.ContactInformation))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Birthday))
-            .ForMember(dest => dest.Movies, opt => opt.MapFrom(src => src.Movies));
+        CreateMap<Director, DirectorCreateDTO>().ReverseMap();
+
+        CreateMap<Actor, ActorDTO>().ReverseMap();
+        CreateMap<Actor, ActorCreateDTO>();
 
         CreateMap<Genre, GenreDTO>().ReverseMap();
-        CreateMap<Genre, GenreDTO>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Movies, opt => opt.MapFrom(src => src.Movies));
+        CreateMap<Genre, GenreCreateDTO>().ReverseMap();
+
+        CreateMap<ContactInformation, ContactInformationDTO>().ReverseMap();
+        CreateMap<ContactInformation, ContactInformationCreateDTO>().ReverseMap();
     }
 }
