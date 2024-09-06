@@ -79,7 +79,7 @@ internal class SeedMovies
                     new() { Id = i + 1, Name = _genreNames[_random.Next(_genreNames.Count)] },
                 },
                 Title = $"Movie {i + 1}",
-                Rating = $"{_random.Next(1, 10)}",
+                Rating = Convert.ToInt32($"{_random.Next(1, 10)}"),
                 ReleaseDate = new DateTime(_random.Next(DateTime.Now.Year - 100, DateTime.Now.Year),
                     _random.Next(1, 12), _random.Next(1, 30)),
                 Description = $"Description for movie {i + 1}"

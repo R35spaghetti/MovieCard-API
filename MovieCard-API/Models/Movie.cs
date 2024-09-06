@@ -10,7 +10,7 @@ public class Movie
     public ICollection<Actor>? Actors { get; set; }
     public ICollection<Genre>? Genres { get; set; }
     [StringLength(30)] public string Title { get; set; }
-    [Range(0, 10)] public string Rating { get; set; }
+    [Range(0, 10)] public int Rating { get; set; }
     [DataType(DataType.Date)] public DateTime ReleaseDate { get; set; }
     [StringLength(100)] public string Description { get; set; }
 }
