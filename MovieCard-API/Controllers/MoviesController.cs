@@ -24,9 +24,9 @@ public class MoviesController : ControllerBase
         try
         {
             var movies = await _movieRepository.GetAllMoviesAsync();
-            
-           movies = SortMovies.ApplyFilters(movies, parameters);
-            
+
+            movies = SortMovies.ApplyFilters(movies, parameters);
+
             var sortedMovies = SortMovies.GetSortedMovies(sortBy, movies);
             var result = sortedMovies.ConvertMovies();
             return Ok(result);
@@ -101,13 +101,13 @@ public class MoviesController : ControllerBase
     {
         if (patchMovie is null) return BadRequest("No patch doc found");
 
-         var movie = await _movieRepository.GetMovieByIdAsync(id);
-         var movieDto = movie.ConvertOneMovie();
+        var movie = await _movieRepository.GetMovieByIdAsync(id);
+        var movieDto = movie.ConvertOneMovie();
         if (movie == null)
         {
             return NotFound("Movie not found");
         }
-    
+
         try
         {
             patchMovie.ApplyTo(movieDto);
@@ -116,7 +116,7 @@ public class MoviesController : ControllerBase
             {
                 UnprocessableEntity(ModelState);
             }
-    
+
             await _movieRepository.UpdateMovieAsync(movieDto);
             return Ok(movie);
         }
@@ -124,5 +124,5 @@ public class MoviesController : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
-   }
+    }
 }
