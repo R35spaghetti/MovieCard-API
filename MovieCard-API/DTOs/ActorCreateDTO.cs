@@ -1,7 +1,9 @@
 ﻿namespace MovieCard_API.DTOs;
 
-public record ActorCreateDTO(
-    string Name,
-    DateTime Birthday,
-    ICollection<MovieCreateDTO>? Movies
-);
+public record ActorCreateDTO
+{
+    public string Name { get; set; }
+    public DateTime Birthday { get; set; }
+    public ICollection<MovieCreateDTO>? Movies { get; set; }
+
+}

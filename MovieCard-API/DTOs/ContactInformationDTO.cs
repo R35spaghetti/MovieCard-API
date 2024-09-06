@@ -1,10 +1,10 @@
-﻿using MovieCard_API.Models;
+﻿namespace MovieCard_API.DTOs;
 
-namespace MovieCard_API.DTOs;
-
-public record ContactInformationDTO(
-    int Id,
-    Director Director,
-    string Email,
-    int PhoneNumber
-);
+public record ContactInformationDTO
+{
+    public int Id { get; set; }
+    public int DirectorId { get; set; }
+    public DirectorDTO Director { get; set; }
+    public string Email { get; set; }
+    public int PhoneNumber { get; set; }
+}

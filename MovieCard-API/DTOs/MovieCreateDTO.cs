@@ -1,12 +1,12 @@
-﻿
-namespace MovieCard_API.DTOs;
+﻿namespace MovieCard_API.DTOs;
 
-public record MovieCreateDTO(
-    string Title,
-    string Rating,
-    DirectorCreateDTO? Director,
-    ICollection<ActorCreateDTO>? Actors,
-    ICollection<GenreCreateDTO>? Genres,
-    DateTime ReleaseDate,
-    string Description
-);
+public record MovieCreateDTO
+{
+    public string Title { get; set; }
+    public string Rating { get; set; }
+    public DateTime ReleaseDate { get; set; }
+    public string Description { get; set; }
+    public DirectorCreateDTO? Director { get; set; }
+    public ICollection<ActorCreateDTO>? Actors { get; set; }
+    public ICollection<GenreDTO>? Genres { get; set; }
+}

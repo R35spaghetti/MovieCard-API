@@ -1,7 +1,9 @@
 ﻿namespace MovieCard_API.DTOs;
 
-public record ContactInformationCreateDTO(
-    string Email,
-    DirectorCreateDTO Director,
-    int PhoneNumber
-);
+public record ContactInformationCreateDTO
+{
+    public int DirectorId { get; set; }
+    public DirectorCreateDTO Director { get; set; }
+    public string Email { get; set; }
+    public int PhoneNumber { get; set; }
+}
