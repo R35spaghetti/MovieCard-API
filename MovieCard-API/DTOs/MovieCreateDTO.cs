@@ -6,7 +6,7 @@ public record MovieCreateDTO
     public string Rating { get; set; }
     public DateTime ReleaseDate { get; set; }
     public string Description { get; set; }
-    public DirectorCreateDTO? Director { get; set; }
-    public ICollection<ActorCreateDTO>? Actors { get; set; }
-    public ICollection<GenreDTO>? Genres { get; set; }
+    public int DirectorId { get; set; }
+    public int ActorIds { get; set; }
+    public int GenreIds { get; set; }
 }

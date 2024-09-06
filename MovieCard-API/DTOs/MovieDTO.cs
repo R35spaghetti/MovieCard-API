@@ -9,7 +9,5 @@ public record MovieDTO
     public string Rating { get; set; }
     public DateTime ReleaseDate { get; set; }
     public string Description { get; set; }
-    public DirectorDTO? Director { get; set; }
-    public ICollection<ActorDTO>? Actors { get; set; }
-    public ICollection<string>? Genres { get; set; }
+ 
 }
