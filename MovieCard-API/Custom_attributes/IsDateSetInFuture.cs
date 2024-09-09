@@ -5,11 +5,14 @@ namespace MovieCard_API.Custom_attributes;
 
 public class IsDateSetInFuture : ValidationAttribute
 {
-    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        var dateString = value?.ToString() ?? string.Empty;
+
+        var dateTime = (DateTime)(value ?? string.Empty);
+    
+        var dateString = dateTime.ToString("yyyy-MM-dd");
         
-        if (!DateTime.TryParseExact(dateString, ["YYYY-MM-DD"], CultureInfo.InvariantCulture,
+        if (!DateTime.TryParseExact(dateString, ["yyyy-mm-dd"], CultureInfo.InvariantCulture,
                                                                            DateTimeStyles.None, out var releaseDate))
         {
             return new ValidationResult($"Please enter a valid {validationContext.DisplayName}");
