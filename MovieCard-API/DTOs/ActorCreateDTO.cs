@@ -1,7 +1,9 @@
-﻿namespace MovieCard_API.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MovieCard_API.DTOs;
 
 public record ActorCreateDTO
 {
-    public string Name { get; set; }
-    public DateTime Birthday { get; set; }
+    [StringLength(30)] public string Name { get; set; }
+    [DataType(DataType.Date)] public DateTime Birthday { get; set; }
 }
