@@ -1,9 +1,10 @@
-﻿namespace MovieCard_API.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MovieCard_API.DTOs;
 
 public record DirectorCreateDTO
 {
-   public string Name { get; set; }
-   public int? ContactInformationId { get; set; }
-    public  DateTime Birthday { get; set; }
-
+    [StringLength(30)] public string Name { get; set; }
+    public int? ContactInformationId { get; set; }
+    [DataType(DataType.Date)] public DateTime Birthday { get; set; }
 }

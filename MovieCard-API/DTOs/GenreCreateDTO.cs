@@ -1,6 +1,8 @@
-﻿namespace MovieCard_API.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MovieCard_API.DTOs;
 
 public record GenreCreateDTO
 {
-   public string Name { get; set; }
+    [StringLength(30)] public string Name { get; set; }
 }
