@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
+using MovieCard_API.Features.UnitOfWork;
 using MovieCard_API.Repositories;
+using MovieCard_API.Repositories.contracts;
 using MovieCard_API.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +15,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MovieCardContext>(options => options
     .UseSqlite(builder.Configuration.GetConnectionString("MovieCardContext") ?? string.Empty));
 builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddScoped<MovieRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddSingleton<SeedMovies>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 var app = builder.Build();
