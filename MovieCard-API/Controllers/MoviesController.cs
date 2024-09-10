@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieCard_API.DTOs;
 using MovieCard_API.Features;
-using MovieCard_API.Repositories;
+using MovieCard_API.Features.UnitOfWork;
+using MovieCard_API.Repositories.contracts;
 
 namespace MovieCard_API.Controllers;
 
@@ -10,11 +11,12 @@ namespace MovieCard_API.Controllers;
 [ApiController]
 public class MoviesController : ControllerBase
 {
-    private readonly MovieRepository _movieRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public MoviesController(MovieRepository movieRepository)
+    
+    public MoviesController(IUnitOfWork unitOfWork)
     {
-        _movieRepository = movieRepository;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet]
@@ -23,7 +25,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _movieRepository.GetAllMoviesAsync();
+            var movies = await _unitOfWork.Movies.GetAllMoviesAsync();
 
             movies = SortMovies.ApplyFilters(movies, parameters);
 
@@ -42,7 +44,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = await _movieRepository.GetMovieByIdAsync(id);
+            var movie = await _unitOfWork.Movies.GetMovieByIdAsync(id);
 
             return Ok(movie);
         }
@@ -57,7 +59,8 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var createdMovie = await _movieRepository.CreateMovieAsync(movie);
+            var createdMovie = await _unitOfWork.Movies.CreateMovieAsync(movie);
+            await _unitOfWork.CompleteAsync();
 
             return Ok(createdMovie);
         }
@@ -72,8 +75,8 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var updateMovie = await _movieRepository.UpdateMovieAsync(movie);
-
+            var updateMovie = await _unitOfWork.Movies.UpdateMovieAsync(movie);
+            await _unitOfWork.CompleteAsync();
             return Ok(updateMovie);
         }
         catch (Exception ex)
@@ -87,7 +90,8 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            await _movieRepository.DeleteMovieAsync(id);
+            await _unitOfWork.Movies.DeleteMovieAsync(id);
+            await _unitOfWork.CompleteAsync();
             return StatusCode(StatusCodes.Status204NoContent);
         }
         catch (Exception ex)
@@ -100,8 +104,8 @@ public class MoviesController : ControllerBase
     public async Task<ActionResult> PatchMovie(JsonPatchDocument<MovieDTO> patchMovie, int id)
     {
         if (patchMovie is null) return BadRequest("No patch doc found");
+        var movie = await _unitOfWork.Movies.GetMovieByIdAsync(id);
 
-        var movie = await _movieRepository.GetMovieByIdAsync(id);
         var movieDto = movie.ConvertOneMovie();
         if (movie == null)
         {
@@ -117,7 +121,8 @@ public class MoviesController : ControllerBase
                 UnprocessableEntity(ModelState);
             }
 
-            await _movieRepository.UpdateMovieAsync(movieDto);
+            await _unitOfWork.Movies.UpdateMovieAsync(movieDto);
+            await _unitOfWork.CompleteAsync();
             return Ok(movie);
         }
         catch (Exception ex)

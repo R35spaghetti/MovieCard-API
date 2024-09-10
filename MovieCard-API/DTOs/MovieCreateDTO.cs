@@ -15,6 +15,6 @@ public record MovieCreateDTO
 
     [StringLength(100)] public string Description { get; set; }
     public int? DirectorId { get; set; }
-    public IEnumerable<ActorDTO>? ActorIds { get; set; }
-    public IEnumerable<GenreDTO>? GenreIds { get; set; }
+    public IEnumerable<int> ActorIds { get; set; }
+    public IEnumerable<int> GenreIds { get; set; }
 }
