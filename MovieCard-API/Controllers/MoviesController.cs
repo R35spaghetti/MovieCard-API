@@ -130,7 +130,7 @@ public class MoviesController : ControllerBase
         }
     }
     [HttpPost("{id:int}")]
-    public async Task<ActionResult<ActorCreateDTO>> AddActorsToMovie(int id, [FromQuery] IEnumerable<ActorCreateDTO> actors)
+    public async Task<ActionResult<ActorCreateDTO>> AddActorsToMovie(int id, [FromQuery] ICollection<ActorCreateDTO> actors)
     {
 
         try

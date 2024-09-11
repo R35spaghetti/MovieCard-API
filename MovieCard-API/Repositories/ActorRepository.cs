@@ -20,7 +20,7 @@ public class ActorRepository : IActorRepository
         _mapper = mapper;
     }
 
-    public async Task AddActorToMovieAsync(int movieId, IEnumerable<ActorCreateDTO> actors)
+    public async Task AddActorToMovieAsync(int movieId, ICollection<ActorCreateDTO> actors)
     {
         var movie = _context.Movies.FirstOrDefault(p => p.Id == movieId);
 
