@@ -9,14 +9,18 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly MovieCardContext _dbContext;
     private readonly Lazy<IMovieRepository> _moviesRepository;
+    private readonly Lazy<IActorRepository> _actorsRepository;
 
     public UnitOfWork(MovieCardContext dbContext, IMapper mapper)
     {
-        _dbContext = dbContext;
+        _dbContext = dbContext; 
         _moviesRepository = new Lazy<IMovieRepository>(() => new MovieRepository(dbContext, mapper));
+        _actorsRepository = new Lazy<IActorRepository>(() => new ActorRepository(dbContext, mapper));
     }
 
     public IMovieRepository Movies => _moviesRepository.Value;
+    
+    public IActorRepository Actors => _actorsRepository.Value;
 
     public async Task CompleteAsync()
     {

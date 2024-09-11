@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using MovieCard_API.DTOs;
 using MovieCard_API.Features;
 using MovieCard_API.Features.UnitOfWork;
-using MovieCard_API.Repositories.contracts;
 
 namespace MovieCard_API.Controllers;
 
@@ -45,7 +44,7 @@ public class MoviesController : ControllerBase
         try
         {
             var movie = await _unitOfWork.Movies.GetMovieByIdAsync(id);
-
+            
             return Ok(movie);
         }
         catch (Exception ex)
@@ -124,6 +123,21 @@ public class MoviesController : ControllerBase
             await _unitOfWork.Movies.UpdateMovieAsync(movieDto);
             await _unitOfWork.CompleteAsync();
             return Ok(movie);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+    [HttpPost("{id:int}")]
+    public async Task<ActionResult<ActorCreateDTO>> AddActorsToMovie(int id, [FromQuery] IEnumerable<ActorCreateDTO> actors)
+    {
+
+        try
+        {
+            await _unitOfWork.Actors.AddActorToMovieAsync(id, actors);
+            await _unitOfWork.CompleteAsync();
+            return Ok();
         }
         catch (Exception ex)
         {

@@ -7,4 +7,6 @@ public interface IUnitOfWork : IDisposable
     Task CompleteAsync();
 
     IMovieRepository Movies { get; }
+    
+    IActorRepository Actors { get; }
 }
