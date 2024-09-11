@@ -44,7 +44,6 @@ public class ActorRepository : IActorRepository
 
         _mapper.Map<List<Actor>>(actors);
 
-        await _context.SaveChangesAsync();
     }
 }
 
