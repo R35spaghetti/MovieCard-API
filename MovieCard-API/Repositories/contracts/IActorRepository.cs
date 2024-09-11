@@ -4,6 +4,6 @@ namespace MovieCard_API.Repositories.contracts;
 
 public interface IActorRepository
 {
-    Task AddActorToMovieAsync(int movieId,ICollection<ActorCreateDTO> actors);
+    Task AddActorToMovieAsync(int movieId,List<ActorCreateDTO> actors);
 
 }

@@ -20,7 +20,7 @@ public class ActorRepository : IActorRepository
         _mapper = mapper;
     }
 
-    public async Task AddActorToMovieAsync(int movieId, ICollection<ActorCreateDTO> actors)
+    public async Task AddActorToMovieAsync(int movieId, List<ActorCreateDTO> actors)
     {
         var movie = _context.Movies.FirstOrDefault(p => p.Id == movieId);
 
@@ -42,7 +42,7 @@ public class ActorRepository : IActorRepository
             throw new Exception($"{actor.Name} with birthday {actor.Birthday} already exists.");
         }
 
-        _mapper.Map<Actor>(actors);
+        _mapper.Map<List<Actor>>(actors);
 
         await _context.SaveChangesAsync();
     }
