@@ -40,10 +40,10 @@ public class MovieRepository : IMovieRepository
     public async Task<Movie> GetMovieByIdAsync(int id)
     {
         var movie = await _context.Movies
-            .Include(d => d.Director)
-            .ThenInclude(c => c.ContactInformation)
-            .Include(a => a.Actors)
-            .Include(g => g.Genres)
+            // .Include(d => d.Director)
+            // .ThenInclude(c => c.ContactInformation)
+            // .Include(a => a.Actors)
+            // .Include(g => g.Genres)
             .FirstOrDefaultAsync(x => x.Id == id);
 
 
@@ -65,11 +65,11 @@ public class MovieRepository : IMovieRepository
 
     public async Task<Movie> UpdateMovieAsync(MovieDTO updateMovie)
     {
-        var movie = await _context.Movies
-            .Include(d => d.Director)
-            .ThenInclude(c => c.ContactInformation)
-            .Include(a => a.Actors)
-            .Include(g => g.Genres).FirstOrDefaultAsync(m => m.Id == updateMovie.Id);
+        var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == updateMovie.Id);
+        // .Include(d => d.Director)
+        // .ThenInclude(c => c.ContactInformation)
+        // .Include(a => a.Actors)
+        // .Include(g => g.Genres).FirstOrDefaultAsync(m => m.Id == updateMovie.Id);
 
 
         if (movie == null)
