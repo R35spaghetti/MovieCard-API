@@ -46,6 +46,7 @@ public class MovieRepository : IMovieRepository
             .Include(g => g.Genres)
             .FirstOrDefaultAsync(x => x.Id == id);
 
+
         if (movie == null)
         {
             throw new InvalidOperationException($"Movie with ID {id} not found");
@@ -54,12 +55,11 @@ public class MovieRepository : IMovieRepository
         return _mapper.Map<Movie>(movie);
     }
 
-    public Task<Movie> CreateMovieAsync(MovieCreateDTO createMovie)
+    public async Task<Movie> CreateMovieAsync(MovieCreateDTO createMovie)
     {
         var movie = _mapper.Map<Movie>(createMovie);
-
-
-        return Task.FromResult(_mapper.Map<Movie>(movie));
+        await _context.AddAsync(movie);
+        return movie;
     }
 
 
@@ -79,12 +79,9 @@ public class MovieRepository : IMovieRepository
 
         try
         {
-            movie.Title = updateMovie.Title;
-            movie.Rating = updateMovie.Rating;
-            movie.ReleaseDate = updateMovie.ReleaseDate;
-            movie.Description = updateMovie.Description;
-
-            return _mapper.Map<Movie>(movie);
+            _mapper.Map(updateMovie, movie);
+            _context.Entry(movie).State = EntityState.Modified;
+            return movie;
         }
         catch (DbUpdateConcurrencyException ex)
         {
