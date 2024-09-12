@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using MovieCard_API.DTOs;
 using MovieCard_API.Models;
-using MovieCard_API.Resolver;
 
 namespace MovieCard_API.Data;
 
@@ -11,22 +10,27 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         CreateMap<MovieCreateDTO, Movie>()
-            .ForMember(dest => dest.Genres, opt => opt.MapFrom<GenreResolver>())
-            .ForMember(dest => dest.Actors, opt => opt.MapFrom<ActorResolver>())
-            .ForMember(dest => dest.Actors, opt => opt.Ignore())
-            .ForMember(dest => dest.Genres, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<MovieDTO, Movie>();
+        
+        CreateMap<ActorCreateDTO, Actor>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        CreateMap<ActorDTO, Actor>();
 
-        CreateMap<JsonPatchDocument<MovieDTO>, JsonPatchDocument<Movie>>().ReverseMap();
-        CreateMap<Director, DirectorDTO>().ReverseMap();
-        CreateMap<Director, DirectorCreateDTO>().ReverseMap();
 
-        CreateMap<Actor, ActorDTO>().ReverseMap();
-        CreateMap<Actor, ActorCreateDTO>();
+        CreateMap<JsonPatchDocument<MovieDTO>, JsonPatchDocument<Movie>>();
+        CreateMap<DirectorDTO, Director>();
+        CreateMap<DirectorCreateDTO, Director>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
 
-        CreateMap<Genre, GenreDTO>().ReverseMap();
-        CreateMap<Genre, GenreCreateDTO>().ReverseMap();
 
-        CreateMap<ContactInformation, ContactInformationDTO>().ReverseMap();
-        CreateMap<ContactInformation, ContactInformationCreateDTO>().ReverseMap();
+        CreateMap<GenreDTO, Genre>();
+        CreateMap<GenreCreateDTO, Genre>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+
+        CreateMap<ContactInformationDTO, ContactInformation>();
+        CreateMap<ContactInformationCreateDTO, ContactInformation>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
     }
 }
