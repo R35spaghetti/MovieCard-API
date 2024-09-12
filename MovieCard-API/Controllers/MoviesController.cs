@@ -126,16 +126,16 @@ public class MoviesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message); 
         }
     }
-    [HttpPost("{id:int}")]
-    public async Task<ActionResult<ActorCreateDTO>> AddActorsToMovie(int id, [FromQuery] List<ActorCreateDTO> actors)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<ActorCreateDTO>> AddActorsToMovie(int id, [FromBody] List<ActorCreateDTO> actors)
     {
 
         try
         {
-            await _unitOfWork.Actors.AddActorToMovieAsync(id, actors);
+            await _unitOfWork.Movies.AddActorToMovieAsync(id, actors);
             await _unitOfWork.CompleteAsync();
             return Ok();
         }

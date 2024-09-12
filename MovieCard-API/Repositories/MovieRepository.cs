@@ -96,4 +96,35 @@ public class MovieRepository : IMovieRepository
         var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
         if (movie != null) _context.Movies.Remove(movie);
     }
+
+
+    public async Task AddActorToMovieAsync(int movieId, ICollection<ActorCreateDTO> actors)
+    {
+        var movie = _context.Movies.Include(a => a.Actors).FirstOrDefault(m => m.Id == movieId);
+
+        if (movie == null)
+        {
+            throw new Exception($"Movie with id {movieId} not found.");
+        }
+     
+      
+        foreach (var actorDto in actors)
+        {
+            var existingActor =
+                movie.Actors.FirstOrDefault(a => a.Name == actorDto.Name && a.Birthday == actorDto.Birthday);
+
+            if (existingActor != null)
+            {
+                _mapper.Map(actorDto, existingActor);
+            }
+            else
+            {
+                var newActor = _mapper.Map<Actor>(actorDto);
+                movie.Actors.Add(newActor);
+          
+            }
+        }
+
+        _context.Entry(movie).State = EntityState.Modified;
+    }
 }
