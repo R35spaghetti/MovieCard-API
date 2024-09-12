@@ -10,4 +10,6 @@ public interface IMovieRepository
     Task<Movie> CreateMovieAsync(MovieCreateDTO movie);
     Task<Movie> UpdateMovieAsync(MovieDTO movie);
     Task DeleteMovieAsync(int id);
+    
+    Task AddActorToMovieAsync(int movieId,ICollection<ActorCreateDTO> actors);
 }
