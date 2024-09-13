@@ -8,5 +8,4 @@ public interface IUnitOfWork : IDisposable
 
     IMovieRepository Movies { get; }
     
-    IActorRepository Actors { get; }
 }
