@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MovieCard_API.Data;
 using MovieCard_API.DTOs;
+using MovieCard_API.Helpers;
 using MovieCard_API.Models;
 using MovieCard_API.Repositories.contracts;
 
@@ -98,33 +99,34 @@ public class MovieRepository : IMovieRepository
     }
 
 
-    public async Task AddActorToMovieAsync(int movieId, ICollection<ActorCreateDTO> actors)
+    public async Task AddActorToMovieAsync(int movieId, List<ActorCreateDTO> actorsToBeAdded)
     {
-        var movie = _context.Movies.Include(a => a.Actors).FirstOrDefault(m => m.Id == movieId);
+        var movie = await _context.Movies
+            .Include(a => a.Actors)
+            .FirstOrDefaultAsync(m => m.Id == movieId);
+
 
         if (movie == null)
         {
-            throw new Exception($"Movie with id {movieId} not found.");
+            throw new KeyNotFoundException($"Movie with id {movieId} not found.");
         }
-     
-      
-        foreach (var actorDto in actors)
+
+        var getAllActors = movie.Actors;
+        var checkActorList = HelperMethods.CheckDuplicateActors(actorsToBeAdded, getAllActors);
+        if (checkActorList.Any())
         {
-            var existingActor =
-                movie.Actors.FirstOrDefault(a => a.Name == actorDto.Name && a.Birthday == actorDto.Birthday);
+            var duplicateInfo = checkActorList.Select(actor =>
+                $"{actor.Name} ({actor.Birthday})").ToList();
 
-            if (existingActor != null)
-            {
-                _mapper.Map(actorDto, existingActor);
-            }
-            else
-            {
-                var newActor = _mapper.Map<Actor>(actorDto);
-                movie.Actors.Add(newActor);
-          
-            }
+            throw new InvalidOperationException($"Duplicate actors found: {string.Join(", ", duplicateInfo)}, try again!");
         }
 
-        _context.Entry(movie).State = EntityState.Modified;
+        foreach (var actorDto in actorsToBeAdded)
+        {
+            var newActor = _mapper.Map<Actor>(actorDto);
+            movie.Actors.Add(newActor);
+        }
+
+        _context.Update(movie);
     }
 }
