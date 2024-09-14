@@ -106,11 +106,7 @@ public class MoviesController : ControllerBase
         var movie = await _unitOfWork.Movies.GetMovieByIdAsync(id);
 
         var movieDto = movie.ConvertOneMovie();
-        if (movie == null)
-        {
-            return NotFound("Movie not found");
-        }
-
+        
         try
         {
             patchMovie.ApplyTo(movieDto);
@@ -122,7 +118,7 @@ public class MoviesController : ControllerBase
 
             await _unitOfWork.Movies.UpdateMovieAsync(movieDto);
             await _unitOfWork.CompleteAsync();
-            return Ok(movie);
+            return Ok(movieDto);
         }
         catch (Exception ex)
         {
