@@ -81,7 +81,7 @@ public class MovieRepository : IMovieRepository
         try
         {
             _mapper.Map(updateMovie, movie);
-            _context.Entry(movie).State = EntityState.Modified;
+            _context.Update(movie);
             return movie;
         }
         catch (DbUpdateConcurrencyException ex)
